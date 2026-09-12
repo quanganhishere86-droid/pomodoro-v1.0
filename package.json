@@ -1,5 +1,7 @@
 {
-  "name": "react-example",
+  "name": "pomodoro-app",
+  "description": "A beautiful Pomodoro timer application",
+  "author": "AI Studio User",
   "private": true,
   "version": "0.0.0",
   "type": "module",
