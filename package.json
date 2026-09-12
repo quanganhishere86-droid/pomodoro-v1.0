@@ -43,6 +43,11 @@
   },
   "build": {
     "appId": "com.aistudio.pomodoro",
+    "files": [
+      "dist/**/*",
+      "electron-main.cjs",
+      "package.json"
+    ],
     "win": {
       "target": "nsis"
     },
