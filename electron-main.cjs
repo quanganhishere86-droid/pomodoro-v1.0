@@ -8,6 +8,8 @@ function createWindow () {
     autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
+      webSecurity: false
     }
   });
 

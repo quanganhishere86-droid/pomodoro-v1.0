@@ -5,7 +5,7 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
-    base: './',
+    base: './', // CRITICAL: This ensures all built assets use relative paths for Electron
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
