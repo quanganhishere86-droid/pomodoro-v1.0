@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, RotateCcw, Monitor, Coffee, Bell, CheckSquare, Check, Trash2, Globe } from 'lucide-react';
+import { Play, Pause, RotateCcw, Monitor, Coffee, Bell, CheckSquare, Check, Trash2, Globe, Bug } from 'lucide-react';
 import { motion } from 'motion/react';
 import YouTube from 'react-youtube';
 // To use an uploaded image, ensure it is in the /src/assets/images folder and import it here:
@@ -44,6 +44,7 @@ const TRANSLATIONS = {
     active: 'Active',
     upcoming: 'Upcoming',
     langName: 'English',
+    reportBug: 'Report a bug',
   },
   vi: {
     inputPlaceholder: 'Hãy viết tên môn bạn hoàn thành để autotick!',
@@ -68,6 +69,7 @@ const TRANSLATIONS = {
     active: 'Đang chạy',
     upcoming: 'Sắp tới',
     langName: 'Tiếng Việt',
+    reportBug: 'Báo lỗi',
   },
   cn: {
     inputPlaceholder: '写入自动勾选！',
@@ -92,6 +94,7 @@ const TRANSLATIONS = {
     active: '进行中',
     upcoming: '即将开始',
     langName: '简体中文',
+    reportBug: '报告问题',
   },
   'zh-Hant': {
     inputPlaceholder: '寫入自動勾選！',
@@ -116,6 +119,7 @@ const TRANSLATIONS = {
     active: '進行中',
     upcoming: '即將開始',
     langName: '繁體中文',
+    reportBug: '回報問題',
   },
   fr: {
     inputPlaceholder: 'Écrivez pour cocher!',
@@ -140,6 +144,7 @@ const TRANSLATIONS = {
     active: 'En cours',
     upcoming: 'À venir',
     langName: 'Français',
+    reportBug: 'Signaler un bug',
   }
 };
 
@@ -243,11 +248,7 @@ export default function App() {
     } catch (e) {
       console.error('Error loading todos from localStorage:', e);
     }
-    return [
-      { id: '1', text: 'Math homework', completed: true },
-      { id: '2', text: 'Biology revision', completed: false },
-      { id: '3', text: 'Review 120-minute session goals', completed: false },
-    ];
+    return [];
   });
   const [newTodo, setNewTodo] = useState('');
 
@@ -629,6 +630,7 @@ export default function App() {
 
   return (
     <div className={`${t.container} min-h-screen w-full relative overflow-x-hidden p-4 sm:p-6 flex flex-col items-center py-10 text-gray-800`}>
+
       {/* Frutiger Aero Wallpaper */}
       <div 
         className="fixed inset-0 z-0 transition-all duration-1000 ease-in-out bg-cover bg-center bg-no-repeat"
@@ -640,6 +642,23 @@ export default function App() {
       {/* Decorative Bubbles */}
       <div className="fixed inset-0 pointer-events-none z-0">
         {bubbles}
+      </div>
+
+      {/* App Title */}
+      <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-50 flex items-center select-none pointer-events-none">
+        <h1 
+          className="text-3xl sm:text-4xl font-black tracking-tighter italic"
+          style={{
+            background: currentTheme === 'blue' 
+              ? 'linear-gradient(180deg, #ffffff 0%, #a2d5f2 45%, #2989d8 50%, #0b5394 100%)'
+              : 'linear-gradient(180deg, #ffffff 0%, #fde68a 45%, #f59e0b 50%, #92400e 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            filter: 'drop-shadow(0px 2px 4px rgba(0,0,0,0.3)) drop-shadow(0px 0px 8px rgba(255,255,255,0.6))'
+          }}
+        >
+          Pomofruti
+        </h1>
       </div>
 
       {/* Theme & Language Selectors */}
@@ -668,35 +687,50 @@ export default function App() {
             </div>
           ))}
         </div>
-        <div 
-          className="relative flex justify-end"
-          onMouseEnter={() => setIsLangMenuOpen(true)}
-          onMouseLeave={() => setIsLangMenuOpen(false)}
-        >
-          <div className="aero-panel px-4 py-2 rounded-full flex items-center gap-2 cursor-pointer shadow-sm border border-white/50 backdrop-blur-md hover:scale-105 transition-transform">
-            <Globe size={16} className={t.text} />
-            <span className={`text-xs font-bold ${t.text} uppercase tracking-wider`}>{lang}</span>
-          </div>
+        <div className="flex items-center gap-2">
+          {/* Bug Report Button */}
+          <button 
+            onClick={() => {
+              playClickSound();
+              window.open('https://github.com/quanganhishere86/pomodoro-app/issues/new', '_blank');
+            }}
+            className={`aero-panel w-8 h-8 rounded-full flex items-center justify-center cursor-pointer shadow-sm border border-white/50 backdrop-blur-md hover:scale-105 transition-transform ${t.text}`}
+            title={l.reportBug || 'Report a bug'}
+            aria-label="Report a bug"
+          >
+            <Bug size={16} />
+          </button>
 
-          <div className={`absolute top-full right-0 mt-2 transition-all duration-200 z-50 ${isLangMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
-            <div className="aero-panel p-2 rounded-2xl flex flex-col gap-1 min-w-[140px] shadow-lg border border-white/50 backdrop-blur-xl">
-              {(['en', 'vi', 'cn', 'zh-Hant', 'fr'] as Language[]).map((lCode) => (
-                <button
-                  key={lCode}
-                  onClick={() => {
-                    setLang(lCode);
-                    setIsLangMenuOpen(false);
-                  }}
-                  className={`flex items-center justify-between px-3 py-2 rounded-xl transition-all ${
-                    lang === lCode
-                      ? 'bg-white/80 text-black shadow-sm'
-                      : `hover:bg-white/40 ${t.text} opacity-80 hover:opacity-100`
-                  }`}
-                >
-                  <span className="text-[10px] font-bold uppercase tracking-wider mr-3">{lCode}</span>
-                  <span className="text-xs font-semibold whitespace-nowrap">{TRANSLATIONS[lCode].langName}</span>
-                </button>
-              ))}
+          <div 
+            className="relative flex justify-end"
+            onMouseEnter={() => setIsLangMenuOpen(true)}
+            onMouseLeave={() => setIsLangMenuOpen(false)}
+          >
+            <div className="aero-panel px-4 py-2 rounded-full flex items-center gap-2 cursor-pointer shadow-sm border border-white/50 backdrop-blur-md hover:scale-105 transition-transform">
+              <Globe size={16} className={t.text} />
+              <span className={`text-xs font-bold ${t.text} uppercase tracking-wider`}>{lang}</span>
+            </div>
+
+            <div className={`absolute top-full right-0 mt-2 transition-all duration-200 z-50 ${isLangMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+              <div className="aero-panel p-2 rounded-2xl flex flex-col gap-1 min-w-[140px] shadow-lg border border-white/50 backdrop-blur-xl">
+                {(['en', 'vi', 'cn', 'zh-Hant', 'fr'] as Language[]).map((lCode) => (
+                  <button
+                    key={lCode}
+                    onClick={() => {
+                      setLang(lCode);
+                      setIsLangMenuOpen(false);
+                    }}
+                    className={`flex items-center justify-between px-3 py-2 rounded-xl transition-all ${
+                      lang === lCode
+                        ? 'bg-white/80 text-black shadow-sm'
+                        : `hover:bg-white/40 ${t.text} opacity-80 hover:opacity-100`
+                    }`}
+                  >
+                    <span className="text-[10px] font-bold uppercase tracking-wider mr-3">{lCode}</span>
+                    <span className="text-xs font-semibold whitespace-nowrap">{TRANSLATIONS[lCode].langName}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
