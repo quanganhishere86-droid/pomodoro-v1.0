@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, RotateCcw, Monitor, Coffee, Bell, CheckSquare, Check, Trash2, Globe, Bug } from 'lucide-react';
+import { Play, Pause, RotateCcw, Monitor, Coffee, Bell, CheckSquare, Check, Trash2, Globe } from 'lucide-react';
 import { motion } from 'motion/react';
 import YouTube from 'react-youtube';
 // To use an uploaded image, ensure it is in the /src/assets/images folder and import it here:
@@ -45,6 +45,12 @@ const TRANSLATIONS = {
     upcoming: 'Upcoming',
     langName: 'English',
     reportBug: 'Report a bug',
+    bugReportTitle: 'Bug Reporter',
+    bugReportDesc: 'Describe what happened:',
+    bugReportSubmit: 'Submit Report',
+    bugReportSuccess: 'Bug reported successfully!',
+    bugReportsList: 'Reported Bugs',
+    bugNoReports: 'No bugs reported yet.',
   },
   vi: {
     inputPlaceholder: 'Hãy viết tên môn bạn hoàn thành để autotick!',
@@ -70,6 +76,12 @@ const TRANSLATIONS = {
     upcoming: 'Sắp tới',
     langName: 'Tiếng Việt',
     reportBug: 'Báo lỗi',
+    bugReportTitle: 'Báo Lỗi',
+    bugReportDesc: 'Mô tả vấn đề bạn gặp phải:',
+    bugReportSubmit: 'Gửi Báo Cáo',
+    bugReportSuccess: 'Đã gửi báo lỗi thành công!',
+    bugReportsList: 'Các lỗi đã báo',
+    bugNoReports: 'Chưa có lỗi nào được báo.',
   },
   cn: {
     inputPlaceholder: '写入自动勾选！',
@@ -95,6 +107,12 @@ const TRANSLATIONS = {
     upcoming: '即将开始',
     langName: '简体中文',
     reportBug: '报告问题',
+    bugReportTitle: '报告问题',
+    bugReportDesc: '描述发生的情况：',
+    bugReportSubmit: '提交报告',
+    bugReportSuccess: '错误报告提交成功！',
+    bugReportsList: '已报告的问题',
+    bugNoReports: '尚未报告任何问题。',
   },
   'zh-Hant': {
     inputPlaceholder: '寫入自動勾選！',
@@ -120,6 +138,12 @@ const TRANSLATIONS = {
     upcoming: '即將開始',
     langName: '繁體中文',
     reportBug: '回報問題',
+    bugReportTitle: '回報問題',
+    bugReportDesc: '描述發生的情況：',
+    bugReportSubmit: '提交報告',
+    bugReportSuccess: '錯誤報告提交成功！',
+    bugReportsList: '已回報的問題',
+    bugNoReports: '尚未回報任何問題。',
   },
   fr: {
     inputPlaceholder: 'Écrivez pour cocher!',
@@ -145,6 +169,12 @@ const TRANSLATIONS = {
     upcoming: 'À venir',
     langName: 'Français',
     reportBug: 'Signaler un bug',
+    bugReportTitle: 'Signaler un bug',
+    bugReportDesc: 'Décrivez ce qui s\'est passé:',
+    bugReportSubmit: 'Envoyer le rapport',
+    bugReportSuccess: 'Bug signalé avec succès!',
+    bugReportsList: 'Bugs signalés',
+    bugNoReports: 'Aucun bug signalé pour le moment.',
   }
 };
 
@@ -236,7 +266,7 @@ export default function App() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [taskLabel, setTaskLabel] = useState('');
   const [taskNotFoundError, setTaskNotFoundError] = useState('');
-  
+
   // Persisted To-Dos
   const [todos, setTodos] = useState<{id: string, text: string, completed: boolean}[]>(() => {
     try {
@@ -688,19 +718,6 @@ export default function App() {
           ))}
         </div>
         <div className="flex items-center gap-2">
-          {/* Bug Report Button */}
-          <button 
-            onClick={() => {
-              playClickSound();
-              window.open('https://github.com/quanganhishere86/pomodoro-app/issues/new', '_blank');
-            }}
-            className={`aero-panel w-8 h-8 rounded-full flex items-center justify-center cursor-pointer shadow-sm border border-white/50 backdrop-blur-md hover:scale-105 transition-transform ${t.text}`}
-            title={l.reportBug || 'Report a bug'}
-            aria-label="Report a bug"
-          >
-            <Bug size={16} />
-          </button>
-
           <div 
             className="relative flex justify-end"
             onMouseEnter={() => setIsLangMenuOpen(true)}
@@ -993,6 +1010,7 @@ export default function App() {
         </div>
 
       </div>
+
     </div>
   );
 }
