@@ -677,14 +677,18 @@ export default function App() {
       {/* App Title */}
       <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-50 flex items-center select-none pointer-events-none">
         <h1 
-          className="text-3xl sm:text-4xl font-black tracking-tighter italic"
+          className="text-3xl sm:text-4xl font-black tracking-normal sm:tracking-tight italic pr-2 inline-block"
           style={{
-            background: currentTheme === 'blue' 
-              ? 'linear-gradient(180deg, #ffffff 0%, #a2d5f2 45%, #2989d8 50%, #0b5394 100%)'
-              : 'linear-gradient(180deg, #ffffff 0%, #fde68a 45%, #f59e0b 50%, #92400e 100%)',
+            backgroundImage: currentTheme === 'blue' 
+              ? 'linear-gradient(180deg, #ffffff 0%, #bce6fb 40%, #2989d8 50%, #0d47a1 100%)'
+              : 'linear-gradient(180deg, #ffffff 0%, #fff7ed 32%, #fb923c 45%, #ea580c 52%, #7c2d12 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
-            filter: 'drop-shadow(0px 2px 4px rgba(0,0,0,0.3)) drop-shadow(0px 0px 8px rgba(255,255,255,0.6))'
+            backgroundClip: 'text',
+            color: 'transparent',
+            filter: currentTheme === 'blue'
+              ? 'drop-shadow(0px 2px 3px rgba(0,0,0,0.45)) drop-shadow(0px 0px 8px rgba(41,137,216,0.65)) drop-shadow(0px 0px 2px rgba(255,255,255,0.9))'
+              : 'drop-shadow(0px 2px 4px rgba(0,0,0,0.75)) drop-shadow(0px 0px 4px rgba(255,255,255,0.8)) drop-shadow(0px 0px 6px rgba(234,88,12,0.55))'
           }}
         >
           Pomofruti
