@@ -6,3 +6,7 @@ coverage/
 *.log
 .env*
 !.env.example
+-e 
+release/
+win-unpacked/
+dist.tar.gz
