@@ -3,7 +3,7 @@
   "description": "A beautiful Pomodoro timer application",
   "author": "AI Studio User",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "main": "electron-main.cjs",
   "scripts": {
@@ -51,8 +51,10 @@
     "win": {
       "target": "nsis"
     },
-    "linux": {
-      "target": "zip"
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": true
     },
     "directories": {
       "output": "release",
