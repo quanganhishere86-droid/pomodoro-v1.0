@@ -1,7 +1,10 @@
 {
-  "name": "pomodoro-app",
+  "name": "pomofruti",
+  "productName": "Pomofruti",
   "description": "A beautiful Pomodoro timer application",
-  "author": "AI Studio User",
+  "author": {
+    "name": "Pomofruti. Inc"
+  },
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -42,18 +45,23 @@
     "vite": "^6.2.3"
   },
   "build": {
-    "appId": "com.aistudio.pomodoro",
+    "appId": "com.pomofruti.app",
+    "productName": "Pomofruti",
+    "copyright": "Copyright © 2026 Pomofruti. Inc. All rights reserved.",
+    "artifactName": "${productName}-Setup-${version}.${ext}",
     "files": [
       "dist/**/*",
       "electron-main.cjs",
       "package.json"
     ],
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "publisherName": "Pomofruti. Inc"
     },
     "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
+      "oneClick": true,
+      "perMachine": false,
+      "allowElevation": false,
       "deleteAppDataOnUninstall": true
     },
     "directories": {
