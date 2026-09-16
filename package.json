@@ -58,7 +58,8 @@
       "oneClick": true,
       "perMachine": false,
       "allowElevation": false,
-      "deleteAppDataOnUninstall": true
+      "deleteAppDataOnUninstall": true,
+      "include": "public/installer.nsh"
     },
     "directories": {
       "output": "release",

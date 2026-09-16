@@ -958,7 +958,9 @@ export default function App() {
                        rel: 0,
                        disablekb: 1,
                        fs: 0,
-                       modestbranding: 1
+                       modestbranding: 1,
+                       enablejsapi: 1,
+                       origin: 'https://localhost'
                      },
                    }}
                    onReady={onYtReady}
