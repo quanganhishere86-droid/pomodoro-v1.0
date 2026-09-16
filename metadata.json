@@ -2,5 +2,5 @@
   "name": "Pomofruti",
   "description": "A glossy, Frutiger Aero themed Pomodoro timer with study music.",
   "requestFramePermissions": ["notifications"],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": []
 }

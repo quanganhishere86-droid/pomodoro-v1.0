@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Play, Pause, RotateCcw, Monitor, Coffee, Bell, CheckSquare, Check, Trash2, Globe } from 'lucide-react';
 import { motion } from 'motion/react';
 import YouTube from 'react-youtube';
-// To use an uploaded image, ensure it is in the /src/assets/images folder and import it here:
 import frutigerBg from './assets/images/1375142.png';
 import sunsetBg from './assets/images/e398310ac0qg1.png';
-import albumArt from './assets/images/frutiger_aero_album_art_1789057557691.jpg';
 
 // Timer presets (All strictly total to 120 minutes / 2 hours)
 const PRESETS = [
@@ -221,7 +220,6 @@ const formatTime = (seconds: number) => {
 };
 
 const TimerRing = ({ time, maxTime, color, isActiveMode }: { time: number, maxTime: number, color: string, isActiveMode: boolean }) => {
-  // If it's not the active mode, we want the ring to look full (0 progress).
   const percentage = isActiveMode ? ((maxTime - time) / maxTime) * 100 : 0;
   const strokeDashoffset = 283 - (283 * percentage) / 100;
 
@@ -281,6 +279,7 @@ export default function App() {
     return [];
   });
   const [newTodo, setNewTodo] = useState('');
+  const [showStartConfirm, setShowStartConfirm] = useState(false);
 
   useEffect(() => {
     try {
@@ -292,18 +291,15 @@ export default function App() {
   
   const timerIntervalRef = useRef<number | null>(null);
   
-  // Background music state (YouTube)
   const ytPlayerRef = useRef<any>(null);
   const [audioProgress, setAudioProgress] = useState(0);
   const [audioDuration, setAudioDuration] = useState(0);
 
   const audioCtxRef = useRef<AudioContext | null>(null);
   
-  // Sound effect for when the timer ends
   const endAudioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    // A pleasant chime/bell sound for when a timer completes
     const endAudio = new Audio("https://actions.google.com/sounds/v1/alarms/spaceship_alarm.ogg");
     endAudio.volume = 0.5;
     endAudioRef.current = endAudio;
@@ -336,7 +332,7 @@ export default function App() {
       osc.start(ctx.currentTime);
       osc.stop(ctx.currentTime + 0.03);
     } catch (e) {
-      console.log('Audio play prevented:', e);
+      console.error('Audio play prevented:', e);
     }
   };
 
@@ -426,7 +422,6 @@ export default function App() {
     }
   }, [taskNotFoundError]);
 
-  // Request Notification permission
   useEffect(() => {
     if ('Notification' in window) {
       if (Notification.permission === 'granted') {
@@ -450,7 +445,6 @@ export default function App() {
   const notifyUser = (title: string, body: string) => {
     playEndSound();
     
-    // Fallback to standard alert if notifications are disabled/denied
     if (!notificationsEnabled || Notification.permission !== 'granted') {
       setTimeout(() => alert(`${title}\n\n${body}`), 100);
       return;
@@ -459,7 +453,7 @@ export default function App() {
     try {
       new Notification(title, { body, icon: '/favicon.ico' });
     } catch (e) {
-      console.log("Browser blocked notification, falling back to alert", e);
+      console.error('Browser blocked notification, falling back to alert', e);
       setTimeout(() => alert(`${title}\n\n${body}`), 100);
     }
   };
@@ -582,6 +576,14 @@ export default function App() {
 
   const toggleTimer = () => {
     playClickSound();
+    if (!isActive && todos.length === 0) {
+      setShowStartConfirm(true);
+      return;
+    }
+    executeToggleTimer();
+  };
+
+  const executeToggleTimer = () => {
     setIsActive(!isActive);
     if (!isActive && !notificationsEnabled) {
       requestNotificationPermission();
@@ -639,7 +641,6 @@ export default function App() {
     setTodos(todos.filter(t => t.id !== id));
   };
 
-  // Background bubbles generator
   const bubbles = Array.from({ length: 15 }).map((_, i) => {
     const size = Math.random() * 60 + 20;
     return (
@@ -1013,6 +1014,53 @@ export default function App() {
           </div>
         </div>
         
+        {/* Start Confirm Modal */}
+        {showStartConfirm && createPortal(
+          <>
+            {/* Fullscreen Blur Overlay (Transparent) */}
+            <div 
+              className="fixed top-0 left-0 right-0 bottom-0 z-[99998] bg-black/5 transition-all"
+              style={{ width: '100vw', height: '100dvh', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)' }}
+            ></div>
+            
+            {/* Clear Confirmation Dialog */}
+            <div 
+              className="fixed top-0 left-0 right-0 bottom-0 z-[99999] flex items-center justify-center p-4 pointer-events-none"
+              style={{ width: '100vw', height: '100dvh' }}
+            >
+              <div className="aero-panel p-8 rounded-[32px] max-w-sm w-full shadow-2xl flex flex-col items-center text-center animate-in fade-in zoom-in-95 duration-200 relative overflow-hidden pointer-events-auto">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/60 to-transparent pointer-events-none"></div>
+                <div className="absolute inset-0 bg-white/40 pointer-events-none rounded-[32px] shadow-[inset_0_1px_3px_rgba(255,255,255,0.9)]"></div>
+                
+                <div className="relative z-10 flex items-center justify-center mb-4 bg-transparent">
+                  <CheckSquare size={48} className="text-yellow-600 drop-shadow-md" />
+                </div>
+                <h2 className={`relative z-10 text-xl font-bold mb-2 ${t.text}`}>Are you sure to start the timer?</h2>
+                <p className={`relative z-10 mb-8 font-medium text-sm ${t.textLight}`}>You didn't write task.</p>
+                
+                <div className="relative z-10 flex gap-4 w-full">
+                  <button 
+                    onClick={() => setShowStartConfirm(false)}
+                    className="flex-1 aero-btn px-6 py-3 rounded-xl font-bold text-slate-600 transition-all shadow-sm hover:bg-white/80"
+                  >
+                    No
+                  </button>
+                  <button 
+                    onClick={() => {
+                      setShowStartConfirm(false);
+                      executeToggleTimer();
+                    }}
+                    className={`flex-1 aero-btn-primary px-6 py-3 rounded-xl font-bold transition-all shadow-md`}
+                  >
+                    Yes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </>,
+          document.body
+        )}
+
         {/* Footer */}
         <div className="w-full text-center mt-6 pb-4">
           <p className="text-white/80 text-[11px] font-semibold tracking-wide drop-shadow-md">
