@@ -7,6 +7,7 @@ function createWindow() {
     height: 800,
     autoHideMenuBar: true,
     title: "Pomofruti",
+    icon: path.join(app.getAppPath(), 'dist', 'icon.png'),
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
