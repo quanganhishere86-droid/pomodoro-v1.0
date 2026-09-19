@@ -280,6 +280,7 @@ export default function App() {
   });
   const [newTodo, setNewTodo] = useState('');
   const [showStartConfirm, setShowStartConfirm] = useState(false);
+  const [sessionStarted, setSessionStarted] = useState(false);
 
   useEffect(() => {
     try {
@@ -510,6 +511,7 @@ export default function App() {
         notifyUser(l.doneTitle, l.doneBody);
         setMode('work');
         setWorkTime(activePreset.work);
+        setSessionStarted(false);
       } else {
         setMode('work');
         setWorkTime(activePreset.work);
@@ -550,6 +552,7 @@ export default function App() {
     }
     
     setIsActive(false);
+    setSessionStarted(false);
     setMode('work');
     setWorkTime(preset.work);
     setBreakTime(preset.break);
@@ -569,6 +572,7 @@ export default function App() {
       timerIntervalRef.current = null;
     }
     setIsActive(false);
+    setSessionStarted(false);
     setMode(targetMode);
     setWorkTime(activePreset.work);
     setBreakTime(activePreset.break);
@@ -576,7 +580,8 @@ export default function App() {
 
   const toggleTimer = () => {
     playClickSound();
-    if (!isActive && todos.length === 0) {
+    const isPaused = sessionStarted || (mode === 'work' ? workTime < activePreset.work : breakTime < activePreset.break) || cyclesCompleted > 0;
+    if (!isActive && !isPaused && todos.length === 0) {
       setShowStartConfirm(true);
       return;
     }
@@ -584,9 +589,13 @@ export default function App() {
   };
 
   const executeToggleTimer = () => {
-    setIsActive(!isActive);
-    if (!isActive && !notificationsEnabled) {
-      requestNotificationPermission();
+    const nextIsActive = !isActive;
+    setIsActive(nextIsActive);
+    if (nextIsActive) {
+      setSessionStarted(true);
+      if (!notificationsEnabled) {
+        requestNotificationPermission();
+      }
     }
   };
 
